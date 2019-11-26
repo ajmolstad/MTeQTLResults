@@ -1,0 +1,76 @@
+---
+title: "Accessing MTeQTL Results"
+author: ""
+date: ""
+output:
+  html_document: default
+  pdf_document: default
+---
+In this document, we provide a simple example showing how to access the estimated multi-tissue eQTL weights from the article "A covariance-enhanced approach to multi-tissue joint eQTL mapping with application to transcriptome wide association studies". First, the user must download and unzip "MTeQTLResults.zip". Then, the user must first specify the path to the directory "MTeQTLResults", e.g., 
+```{r setup, include=TRUE}
+filepath <- "~/Desktop"
+```
+From here, the user must source the function used to access results:
+```{r setup2, tidy=TRUE}
+library(Matrix)
+source(paste(filepath, "/MTeQTLResults/getMTeQTLResults.R", sep=""))
+str(getMTeQTLResults)
+```
+The function used is named $\texttt{getMTeQTLResults}$. This function takes five arguments: 
+
+1. $\texttt{filepath}:$ the filepath as specified above  
+2. $\texttt{gene}:$ a list of gene names for which information should be extracted (e.g., "ENSG00000143196")  
+3.  $\texttt{chr}:$ a list of chromosomes corresponding the positions in the $\texttt{pos}$ argument (e.g., 1)  
+4. $\texttt{pos}:$ a list of positions on a chromosome which must be the same length as $\texttt{chr}$. If both $\texttt{chr}$ and $\texttt{pos}$ are specified, results will be returned for all available genes where $\texttt{pos}$ is within 1Mb of the TSS or TSE.   
+5. $\texttt{extract}$: a list with the items to be extracted -- options are:  
+    -  $\texttt{beta}$: the eQTL weights for each gene (stored as an $r \times 29$ sparse matrix) with column names denoting the tissues for which each column represents the eQTL weights; 
+    -  $\texttt{Omega}$:  the estimated error precision matrix for each gene (stored as a $29 \times 29$ sparse matrix);
+    -  $\texttt{TSS}$: the transcription start site of the gene;
+    -  $\texttt{TES}$: the transcription end site of the gene;
+    -  $\texttt{R2}$: a vector of length 29 with the testing set $R^2$ from the GTEx analysis described in the article; 
+    -  $\texttt{chr}$: the chromosome on which the gene is located. 
+    
+
+For example, suppose we wanted the eQTL weights and test set $R^2$ for the gene ENSG00000143196:
+```{r example1, tidy=TRUE}
+temp <- getMTeQTLResults(filepath, gene = list("ENSG00000143196"), chr = NULL, pos = NULL,
+                         extract = list("beta", "R2"))
+str(temp)
+```
+
+
+
+It can be seen that the results are stored as a list with the same length as the list $\texttt{gene}$. Within each element of that list are all the items included in the list $\texttt{extract}$m plus the gene name. For example, the eQTL weights for this particular gene are $8 \times 29$:
+```{r example2, tidy=TRUE}
+image(temp[[1]]$beta, xlab="Tissues", ylab="SNPs")
+```
+In the above image, the white cell is the only which has coefficient values exactly equal to zero. This is an example of a gene where of the eight identified eQTLs, seven are shared across all 29 tissues and one is shared across 28 tissues. 
+
+
+We can also check the testing set $R^2$ for each tissue type for this particular gene. 
+```{r example3, tidy=TRUE}
+plot(temp[[1]]$R2, pch=20, ylab="Testing set R2", xlab="Tissues")
+abline(h=0, lty=2)
+```
+
+
+To see which tissue type has relatively high $R^2$, we use the following:
+```{r example4, tidy=TRUE}
+colnames(temp[[1]]$beta)[which.max(temp[[1]]$R2)]
+```
+
+Similarly, one can input a longer list of genes and get out the estimated precision matrices for both genes. 
+```{r example5, tidy=TRUE}
+temp2 <- getMTeQTLResults(filepath, gene = list("ENSG00000143196", "ENSG00000144401"), chr = NULL, pos = NULL, extract = list("Omega", "R2"))
+str(temp2)
+image(temp2[[2]]$Omega, ylab="Tissues", xlab="", 
+main="Estimated error precision matrix for ENSG00000144401")
+```
+
+
+If the user would rather input positions and chromosomes than genes, the following can be used: 
+```{r example6, tidy=TRUE}
+temp3 <- getMTeQTLResults(filepath, gene = NULL, chr = list("8", "1"), pos = list("48890700", "10243857"), extract = list("chr", "TSS", "TES", "beta", "R2"))
+str(temp3)
+```
+
