@@ -8,7 +8,7 @@ output:
 ---
 In this document, we provide a simple example showing how to access the estimated multi-tissue eQTL weights from the article "A covariance-enhanced approach to multi-tissue joint eQTL mapping with application to transcriptome wide association studies". First, the user must download and unzip "MTeQTLResults.zip". Then, the user must first specify the path to the directory "MTeQTLResults", e.g., 
 ```{r setup, include=TRUE, cache=TRUE}
-filepath <- "~/Desktop"
+filepath <- "~/Documents/GitHub"
 ```
 From here, the user must source the function used to access results:
 ```{r setup2, tidy=TRUE, cache=TRUE}
