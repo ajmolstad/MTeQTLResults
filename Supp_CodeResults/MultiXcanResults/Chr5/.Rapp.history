@@ -1,0 +1,3 @@
+load("/Users/aaron/Desktop/AOAS1432/Supp_CodeResults/MultiXcanResults/Chr5/Haemoglobin_Chr5.RDS")
+temp <- readRDS("/Users/aaron/Desktop/AOAS1432/Supp_CodeResults/MultiXcanResults/Chr5/Haemoglobin_Chr5.RDS")
+str(temp)
