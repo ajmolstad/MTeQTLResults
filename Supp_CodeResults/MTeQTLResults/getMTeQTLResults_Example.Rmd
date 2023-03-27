@@ -8,7 +8,7 @@ output:
 ---
 In this document, we provide a simple example showing how to access the estimated multi-tissue eQTL weights from the article "A covariance-enhanced approach to multi-tissue joint eQTL mapping with application to transcriptome wide association studies". First, the user must download and unzip "MTeQTLResults.zip". Then, the user must first specify the path to the directory "MTeQTLResults", e.g., 
 ```{r setup, include=TRUE, cache=TRUE}
-filepath <- "~/Documents/GitHub"
+filepath <- "~/Documents/GitHub/MTeQTLResults/Supp_CodeResults"
 ```
 From here, the user must source the function used to access results:
 ```{r setup2, tidy=TRUE, cache=TRUE}
@@ -42,7 +42,7 @@ str(temp)
 
 It can be seen that the results are stored as a list with the same length as the list $\texttt{gene}$. Within each element of that list are all the items included in the list $\texttt{extract}$m plus the gene name. For example, the eQTL weights for this particular gene are $8 \times 29$:
 ```{r example2, tidy=TRUE, cache=TRUE}
-image(temp[[1]]$beta, xlab="Tissues", ylab="SNPs")
+image(Matrix(temp[[1]]$beta), xlab="Tissues", ylab="SNPs")
 ```
 In the above image, the white cell is the only which has coefficient values exactly equal to zero. This is an example of a gene where of the eight identified eQTLs, seven are shared across all 29 tissues and one is shared across 28 tissues. 
 
@@ -63,7 +63,7 @@ Similarly, one can input a longer list of genes and get out the estimated precis
 ```{r example5, tidy=TRUE, cache=TRUE}
 temp2 <- getMTeQTLResults(filepath, gene = list("ENSG00000143196", "ENSG00000144401"), chr = NULL, pos = NULL, extract = list("Omega", "R2"))
 str(temp2)
-image(temp2[[2]]$Omega, ylab="Tissues", xlab="", 
+image(Matrix(temp2[[2]]$Omega), ylab="Tissues", xlab="", 
 main="Estimated error precision matrix for ENSG00000144401")
 ```
 
