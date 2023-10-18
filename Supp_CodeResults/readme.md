@@ -1,8 +1,7 @@
-# --------------------------------------------------------------
-Code and results for "A covariance-enhanced approach to
+# Code and results
+This directory contains code and results from "A covariance-enhanced approach to
 multi-tissue joint eQTL mapping with application to
 transcriptome-wide association studies"
-# --------------------------------------------------------------
 
 MTeQTLResults contains both the data and example code for extracting estimated eQTL weights. These weights can be used, for example, to perform MultiXcan-type testing. 
 
